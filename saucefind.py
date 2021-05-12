@@ -1,16 +1,11 @@
-import os, requests, urllib.parse, argparse
+import os, requests, urllib.parse, argparse, webbrowser
 from bs4 import BeautifulSoup
 
 parser = argparse.ArgumentParser(description="Search all the available doujin on nhentai.net based on keywords.")
-parser.add_argument("-p", "--page", help="Get search result by page")
-parser.add_argument("-q", "--query", help="Provide search query, keywords. Must be in quote.")
+parser.add_argument("-p", "--page", help="Get search result by page", default=1, type=int)
+parser.add_argument("-q", "--query", help="Provide search query, keywords. Must be in quote.", required=True)
 args = parser.parse_args()
-page = 1
-if not args.page:
-    page = 1
-else:
-    page = int(args.page)
-
+page = args.page
 
 def browser(url):
     os.system(
@@ -49,15 +44,19 @@ def yn(prompt: str):
     while negative:
         res = input(prompt).lower()
         if res not in ["y", "n"]:
-            print("That's not an option.Try again\n")
+            print("That's not an option. Try again\n")
             negative = True
         else:
             negative = False
     return res == "y"
 
+""" clear the terminal on Windows or UNIX """
+def clear():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
 
 def saucefind(text: str, page=1):
-    os.system("cls")
+    clear() # clear terminal
     data = requests.get(f"https://nhentai.net/search/?q={text}&sort=popular&page={str(page)}").text
     soup = BeautifulSoup(data, 'html.parser')
     names_html = soup.findAll('div', class_='caption')
@@ -68,7 +67,7 @@ def saucefind(text: str, page=1):
     links = [x.get("href").split("/")[2] for x in links_html]
     run = True
     while run:
-        os.system("cls")
+        clear() # clear terminal
         print("Found" + results+"|| Search results of \""+text+"\"")
         print("*=============================================*")
         for i in range(len(names)):
@@ -76,7 +75,7 @@ def saucefind(text: str, page=1):
         print("*=============================================*")
         print(f"Current page: {str(page)}\n")
         print("\n1. Change page.\n2. Enjoy one in incognito.\n3. Save one to bookmark\n4. Check bookmarks\n5. Clear "
-              "bookmarks\n0.Exit")
+              "bookmarks\n0. Exit")
         choice = int(input("Option: "))
         if choice == 0:
             run = False
