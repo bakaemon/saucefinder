@@ -134,4 +134,6 @@ def saucefind(text: str, page=1):
 
 
 if __name__ == '__main__':
+    if not page:
+        page = 1
     saucefind(urllib.parse.quote_plus(args.query), page=page)
