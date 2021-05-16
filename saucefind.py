@@ -119,7 +119,7 @@ def saucefind(text: str, page=1):
                 pr = yn("Would you like to read any?(y/n)\n")
                 if pr:
                     i = int(input("Input the index to read: "))
-                    if 0 < i-1 < len(code):
+                    if 0 <= i-1 < len(code):
                         browser("https://nhentai.net/g/"+code[i-1])
                         input("Press any keys to continue...")
                     else:
